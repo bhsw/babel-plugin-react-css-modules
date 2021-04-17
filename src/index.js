@@ -72,7 +72,7 @@ export default ({
       return parentPath.isProgram();
     });
 
-    filenameMap[filename].importedHelperIndentifier = programPath.scope.generateUidIdentifier('getClassName');
+    filenameMap[filename].importedHelperIndentifier = programPath.scope.generateUidIdentifier('getClassName.js');
     filenameMap[filename].styleModuleImportMapIdentifier = programPath.scope.generateUidIdentifier('styleModuleImportMap');
 
     programPath.unshiftContainer(
