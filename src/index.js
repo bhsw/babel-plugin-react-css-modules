@@ -6,6 +6,7 @@ import {
 } from 'path';
 import babelPluginJsxSyntax from '@babel/plugin-syntax-jsx';
 import BabelTypes from '@babel/types';
+import template from '@babel/template';
 import Ajv from 'ajv';
 import ajvKeywords from 'ajv-keywords';
 import attributeNameExists from './attributeNameExists';
@@ -17,6 +18,12 @@ import requireCssModule from './requireCssModule';
 import resolveStringLiteral from './resolveStringLiteral';
 import optionsDefaults from './schemas/optionsDefaults';
 import optionsSchema from './schemas/optionsSchema.json';
+
+const hmrTemplate = template(`
+  if (import.meta.webpackHot) {
+    import.meta.webpackHot.accept(%%filename%%);
+  }
+`);
 
 const ajv = new Ajv({
   $data: true,
@@ -107,29 +114,6 @@ export default ({
   };
 
   const addWebpackHotModuleAccept = (path) => {
-    const test = types.memberExpression(types.identifier('module'), types.identifier('hot'));
-    const consequent = types.blockStatement([
-      types.expressionStatement(
-        types.callExpression(
-          types.memberExpression(
-            types.memberExpression(types.identifier('module'), types.identifier('hot')),
-            types.identifier('accept'),
-          ),
-          [
-            types.stringLiteral(path.node.source.value),
-            types.functionExpression(null, [], types.blockStatement([
-              types.expressionStatement(
-                types.callExpression(
-                  types.identifier('require'),
-                  [types.stringLiteral(path.node.source.value)],
-                ),
-              ),
-            ])),
-          ],
-        ),
-      ),
-    ]);
-
     const programPath = path.findParent((parentPath) => {
       return parentPath.isProgram();
     });
@@ -138,7 +122,7 @@ export default ({
       return !types.isImportDeclaration(node);
     });
 
-    const hotAcceptStatement = types.ifStatement(test, consequent);
+    const hotAcceptStatement = hmrTemplate({ filename: types.stringLiteral(path.node.source.value) });
 
     if (firstNonImportDeclarationNode) {
       firstNonImportDeclarationNode.insertBefore(hotAcceptStatement);
