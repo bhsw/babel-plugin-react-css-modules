@@ -7,8 +7,9 @@
       "@babel/env",
       {
         "targets": {
-          "node": "8.0"
-        }
+          "safari": "14.0"
+        },
+        "modules": false
       }
     ]
   ]
