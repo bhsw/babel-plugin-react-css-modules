@@ -65,5 +65,5 @@
     "lint": "eslint ./src",
     "test": "npm run lint && flow && jest"
   },
-  "version": "6.2.1"
+  "version": "6.2.2"
 }
