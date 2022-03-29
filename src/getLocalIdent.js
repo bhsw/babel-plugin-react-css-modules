@@ -8,12 +8,12 @@ import {
   interpolateName,
 } from 'loader-utils';
 
-const filenameReservedRegex = /["*/:<>?\\|]/g;
+const filenameReservedRegex = /["*/:<>?\\|]/gu;
 // eslint-disable-next-line no-control-regex
-const reControlChars = /[\u0000-\u001f\u0080-\u009f]/g;
+const reControlChars = /[\u0000-\u001f\u0080-\u009f]/gu;
 
 const normalizePath = (file) => {
-  return path.sep === '\\' ? file.replace(/\\/g, '/') : file;
+  return path.sep === '\\' ? file.replace(/\\/gu, '/') : file;
 };
 
 const escapeLocalIdent = (localident) => {
@@ -24,7 +24,7 @@ const escapeLocalIdent = (localident) => {
       .replace(/^((-?\d)|--)/, '_$1')
       .replace(filenameReservedRegex, '-')
       .replace(reControlChars, '-')
-      .replace(/\./g, '-'),
+      .replace(/\./gu, '-'),
     {isIdentifier: true},
   );
 };
@@ -35,14 +35,15 @@ export default function getLocalIdent (
   localName,
   options,
 ) {
-  const {context, hashPrefix} = options;
+  const {context, hashPrefix=''} = options;
   const {resourcePath} = loaderContext;
   const request = normalizePath(path.relative(context, resourcePath));
 
   options.content = `${hashPrefix + request}\u0000${localName}`;
 
   const ident = interpolateName(loaderContext, localIdentName, options)
-    .replace(/\[local]/gi, localName);
+    .replace(/\[local\]/giu, localName)
+    .replace(/[@+/]/gu, '-');
 
   return escapeLocalIdent(ident);
 }

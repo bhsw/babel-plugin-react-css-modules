@@ -265,3 +265,5 @@ export default ({
     },
   };
 };
+
+export { default as getLocalIdent } from './getLocalIdent.js';
