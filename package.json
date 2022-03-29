@@ -6,7 +6,6 @@
     "ajv": "^8.11.0",
     "ajv-keywords": "^5.1.0",
     "cssesc": "^3.0.0",
-    "loader-utils": "^2.0.0",
     "postcss-modules": "^4.3.1",
     "postcss-modules-extract-imports": "^3.0.0",
     "postcss-modules-local-by-default": "^4.0.0",
@@ -35,7 +34,9 @@
     "postcss-scss": "^4.0.3"
   },
   "peerDependencies": {
-    "postcss": "^8.4.12"
+    "css-loader": "^6.7.1",
+    "postcss": "^8.4.12",
+    "webpack": "^5.70.0"
   },
   "engines": {
     "node": ">=12.x"
@@ -65,5 +66,5 @@
     "lint": "eslint ./src",
     "test": "npm run lint && flow && jest"
   },
-  "version": "6.1.0"
+  "version": "6.1.1"
 }
